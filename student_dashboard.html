@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 200px;
+            background: #2d3e50;
+            color: #fff;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 30px;
+            width: 100%;
+            display: block;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .sidebar a.active, .sidebar a:hover {
+            background: #1abc9c;
+        }
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background: #f4f6fa;
+            overflow-y: auto;
+        }
+        .student-details {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 24px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .student-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 30px;
+            border: 3px solid #1abc9c;
+        }
+        .student-info h2 {
+            margin: 0 0 8px 0;
+        }
+        .student-info p {
+            margin: 4px 0;
+        }
+        .piechart-section {
+            background: #fff;
+            padding: 24px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .difficulty-section {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            padding: 24px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .difficulty-box {
+            flex: 1;
+            margin: 0 10px;
+            padding: 18px 0;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+        }
+        .easy { background: #27ae60; }
+        .medium { background: #f39c12; }
+        .hard { background: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-logo">Iky Portal</div>
+            <div class="sidebar-links">
+                <a href="#" class="active">Dashboard</a>
+                <a href="courses.html">Courses</a>
+                <a href="#">Practice</a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="topbar">
+                <form class="search-bar" onsubmit="return false;">
+                    <input type="text" placeholder="Search..." />
+                    <button type="submit"><span>&#128269;</span></button>
+                </form>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
+            <!-- Student Profile Section -->
+            <div class="student-profile">
+                <div class="student-info">
+                    <h2 id="studentName">John Doe</h2>
+                    <p><strong>Email:</strong> <span id="studentEmail">johndoe@email.com</span></p>
+                    <p><strong>Course:</strong> Computer Science</p>
+                </div>
+            </div>
+            <!-- Performance Section -->
+            <div class="piechart-section">
+                <h3>Overall Performance</h3>
+                <canvas id="performanceChart" width="300" height="300"></canvas>
+            </div>
+            <div class="difficulty-section">
+                <div class="difficulty-box easy">
+                    Easy<br>
+                    <span style="font-size: 28px;">12</span>
+                </div>
+                <div class="difficulty-box medium">
+                    Medium<br>
+                    <span style="font-size: 28px;">8</span>
+                </div>
+                <div class="difficulty-box hard">
+                    Hard<br>
+                    <span style="font-size: 28px;">5</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Set student info from localStorage
+        const name = localStorage.getItem('studentName') || 'John Doe';
+        const email = localStorage.getItem('studentEmail') || 'johndoe@email.com';
+        document.getElementById('studentName').textContent = name;
+        document.getElementById('studentEmail').textContent = email;
+        // Logout logic
+        document.getElementById('logoutBtn').onclick = function() {
+            localStorage.removeItem('studentEmail');
+            localStorage.removeItem('studentName');
+            window.location.href = 'index.html';
+        };
+        // Pie chart data
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Correct', 'Incorrect', 'Unattempted'],
+                datasets: [{
+                    data: [18, 5, 2],
+                    backgroundColor: ['#1abc9c', '#e74c3c', '#95a5a6'],
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

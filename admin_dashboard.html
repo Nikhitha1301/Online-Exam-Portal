@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - IKY Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: #fff;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-logo {
+            width: 100%;
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            padding: 40px 0 20px 0;
+            background: rgba(0,0,0,0.1);
+            color: #e74c3c;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-links {
+            margin-top: 30px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .sidebar-links a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 16px 30px;
+            width: 100%;
+            display: block;
+            font-size: 16px;
+            margin-bottom: 5px;
+            border-radius: 0 25px 25px 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar-links a:hover {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border-left-color: #e74c3c;
+            transform: translateX(5px);
+        }
+        
+        .sidebar-links a.active {
+            background: #e74c3c;
+            color: #fff;
+            border-left-color: #c0392b;
+            box-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+        }
+        
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .admin-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .admin-details h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.2rem;
+        }
+        
+        .admin-details p {
+            margin: 5px 0 0 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .students-icon { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .courses-icon { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .exams-icon { background: linear-gradient(135deg, #27ae60, #229954); }
+        .revenue-icon { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .action-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .action-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+        
+        .action-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .action-description {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+        
+        .add-student-icon { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .add-course-icon { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .manage-questions-icon { background: linear-gradient(135deg, #27ae60, #229954); }
+        .view-reports-icon { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .sidebar-links {
+                flex-direction: row;
+                justify-content: center;
+                padding: 10px 0;
+            }
+            
+            .sidebar-links a {
+                width: auto;
+                margin: 0 10px;
+                border-radius: 25px;
+                border-left: none;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .topbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <div class="sidebar-logo">Admin Panel</div>
+            <div class="sidebar-links">
+                <a href="#" class="active" onclick="showDashboard()">Dashboard</a>
+                <a href="#" onclick="showStudents()">Students</a>
+                <a href="#" onclick="showCourses()">Courses</a>
+                <a href="#" onclick="showQuestions()">Questions</a>
+                <a href="#" onclick="showReports()">Reports</a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="topbar">
+                <div class="admin-info">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="admin-details">
+                        <h3 id="adminName">Admin</h3>
+                        <p>Administrator</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+            
+            <div id="dashboardContent">
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon students-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-number" id="totalStudents">0</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon courses-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-number" id="totalCourses">0</div>
+                        <div class="stat-label">Total Courses</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon exams-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-number" id="totalExams">0</div>
+                        <div class="stat-label">Total Exams</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon revenue-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-number" id="totalRevenue">₹0</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                </div>
+                
+                <div class="quick-actions">
+                    <div class="action-card" onclick="showAddStudent()">
+                        <div class="action-header">
+                            <div class="action-icon add-student-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h3 class="action-title">Add Student</h3>
+                        </div>
+                        <p class="action-description">Register new students to the portal with their details and course preferences.</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="showAddCourse()">
+                        <div class="action-header">
+                            <div class="action-icon add-course-icon">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <h3 class="action-title">Add Course</h3>
+                        </div>
+                        <p class="action-description">Create new courses with topics, descriptions, and learning materials.</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="showManageQuestions()">
+                        <div class="action-header">
+                            <div class="action-icon manage-questions-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <h3 class="action-title">Manage Questions</h3>
+                        </div>
+                        <p class="action-description">Add, edit, or remove questions from course exams and quizzes.</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="showReports()">
+                        <div class="action-header">
+                            <div class="action-icon view-reports-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h3 class="action-title">View Reports</h3>
+                        </div>
+                        <p class="action-description">Analyze student performance, course statistics, and system reports.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="studentsContent" style="display: none;">
+                <!-- Students management content will be loaded here -->
+            </div>
+            
+            <div id="coursesContent" style="display: none;">
+                <!-- Courses management content will be loaded here -->
+            </div>
+            
+            <div id="questionsContent" style="display: none;">
+                <!-- Questions management content will be loaded here -->
+            </div>
+            
+            <div id="reportsContent" style="display: none;">
+                <!-- Reports content will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check authentication
+        const adminToken = localStorage.getItem('adminToken');
+        if (!adminToken) {
+            window.location.href = 'admin_login.html';
+        }
+        
+        // Set admin name
+        const adminUsername = localStorage.getItem('adminUsername');
+        document.getElementById('adminName').textContent = adminUsername || 'Admin';
+        
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                const [studentsResponse, coursesResponse] = await Promise.all([
+                    fetch('/api/admin/students', {
+                        headers: { 'Authorization': `Bearer ${adminToken}` }
+                    }),
+                    fetch('/api/admin/courses', {
+                        headers: { 'Authorization': `Bearer ${adminToken}` }
+                    })
+                ]);
+                
+                if (studentsResponse.ok && coursesResponse.ok) {
+                    const students = await studentsResponse.json();
+                    const courses = await coursesResponse.json();
+                    
+                    document.getElementById('totalStudents').textContent = students.length;
+                    document.getElementById('totalCourses').textContent = courses.length;
+                    document.getElementById('totalExams').textContent = courses.reduce((total, course) => total + (course.mcqs ? course.mcqs.length : 0), 0);
+                    document.getElementById('totalRevenue').textContent = `₹${students.length * 1000}`; // Mock revenue
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+        
+        // Navigation functions
+        function showDashboard() {
+            document.getElementById('dashboardContent').style.display = 'block';
+            document.getElementById('studentsContent').style.display = 'none';
+            document.getElementById('coursesContent').style.display = 'none';
+            document.getElementById('questionsContent').style.display = 'none';
+            document.getElementById('reportsContent').style.display = 'none';
+            
+            // Update active link
+            updateActiveLink('Dashboard');
+        }
+        
+        function showStudents() {
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('studentsContent').style.display = 'block';
+            document.getElementById('coursesContent').style.display = 'none';
+            document.getElementById('questionsContent').style.display = 'none';
+            document.getElementById('reportsContent').style.display = 'none';
+            
+            loadStudents();
+            updateActiveLink('Students');
+        }
+        
+        function showCourses() {
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('studentsContent').style.display = 'none';
+            document.getElementById('coursesContent').style.display = 'block';
+            document.getElementById('questionsContent').style.display = 'none';
+            document.getElementById('reportsContent').style.display = 'none';
+            
+            loadCourses();
+            updateActiveLink('Courses');
+        }
+        
+        function showQuestions() {
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('studentsContent').style.display = 'none';
+            document.getElementById('coursesContent').style.display = 'none';
+            document.getElementById('questionsContent').style.display = 'block';
+            document.getElementById('reportsContent').style.display = 'none';
+            
+            loadQuestions();
+            updateActiveLink('Questions');
+        }
+        
+        function showReports() {
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('studentsContent').style.display = 'none';
+            document.getElementById('coursesContent').style.display = 'none';
+            document.getElementById('questionsContent').style.display = 'none';
+            document.getElementById('reportsContent').style.display = 'block';
+            
+            loadReports();
+            updateActiveLink('Reports');
+        }
+        
+        function updateActiveLink(activeText) {
+            const links = document.querySelectorAll('.sidebar-links a');
+            links.forEach(link => {
+                link.classList.remove('active');
+                if (link.textContent === activeText) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // Quick action functions
+        function showAddStudent() {
+            showStudents();
+            // Trigger add student modal/form
+        }
+        
+        function showAddCourse() {
+            showCourses();
+            // Trigger add course modal/form
+        }
+        
+        function showManageQuestions() {
+            showQuestions();
+            // Trigger questions management
+        }
+        
+        // Data loading functions
+        async function loadStudents() {
+            try {
+                const response = await fetch('/api/admin/students', {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                
+                if (response.ok) {
+                    const students = await response.json();
+                    displayStudents(students);
+                }
+            } catch (error) {
+                console.error('Error loading students:', error);
+            }
+        }
+        
+        async function loadCourses() {
+            try {
+                const response = await fetch('/api/admin/courses', {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                
+                if (response.ok) {
+                    const courses = await response.json();
+                    displayCourses(courses);
+                }
+            } catch (error) {
+                console.error('Error loading courses:', error);
+            }
+        }
+        
+        async function loadQuestions() {
+            try {
+                const response = await fetch('/api/admin/courses', {
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
+                });
+                
+                if (response.ok) {
+                    const courses = await response.json();
+                    displayQuestions(courses);
+                }
+            } catch (error) {
+                console.error('Error loading questions:', error);
+            }
+        }
+        
+        async function loadReports() {
+            // Implement reports loading
+            document.getElementById('reportsContent').innerHTML = '<h2>Reports</h2><p>Reports functionality will be implemented here.</p>';
+        }
+        
+        // Display functions
+        function displayStudents(students) {
+            const content = `
+                <h2>Students Management</h2>
+                <div style="margin-bottom: 20px;">
+                    <button onclick="showAddStudentForm()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-plus"></i> Add New Student
+                    </button>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <thead>
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Name</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Email</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Course</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${students.map(student => `
+                            <tr>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">${student.name}</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">${student.email}</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">${student.course}</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">
+                                    <button onclick="editStudent('${student._id}')" class="btn btn-sm btn-info" style="margin-right: 5px;">Edit</button>
+                                    <button onclick="deleteStudent('${student._id}')" class="btn btn-sm btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('studentsContent').innerHTML = content;
+        }
+        
+        function displayCourses(courses) {
+            const content = `
+                <h2>Courses Management</h2>
+                <div style="margin-bottom: 20px;">
+                    <button onclick="showAddCourseForm()" class="btn btn-sm btn-success" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-plus"></i> Add New Course
+                    </button>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <thead>
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Course Name</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Description</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Topics</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${courses.map(course => `
+                            <tr>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">${course.name}</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">${course.description}</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">${course.topics.join(', ')}</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #eee;">
+                                    <button onclick="editCourse('${course._id}')" class="btn btn-sm btn-info" style="margin-right: 5px;">Edit</button>
+                                    <button onclick="deleteCourse('${course._id}')" class="btn btn-sm btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('coursesContent').innerHTML = content;
+        }
+        
+        function displayQuestions(courses) {
+            const content = `
+                <h2>Questions Management</h2>
+                <div style="margin-bottom: 20px;">
+                    <button onclick="showAddQuestionForm()" class="btn btn-sm btn-primary" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-plus"></i> Add New Question
+                    </button>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <thead>
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Course</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Type</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Question</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Options</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Answer</th>
+                            <th style="padding: 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${courses.map(course => `
+                            ${course.mcqs ? course.mcqs.map(q => `
+                                <tr>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">${course.name}</td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">MCQ</td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">${q.question}</td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">${q.options.join(', ')}</td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">${q.answer}</td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">
+                                        <button onclick="editQuestion('${course._id}', '${q._id}')" class="btn btn-sm btn-info" style="margin-right: 5px;">Edit</button>
+                                        <button onclick="deleteQuestion('${course._id}', '${q._id}')" class="btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                            ${course.codingQuestions ? course.codingQuestions.map(q => `
+                                <tr>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">${course.name}</td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">Coding</td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">${q.question}</td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">
+                                        <pre style="background: #f0f0f0; padding: 10px; border-radius: 5px;">${q.code}</pre>
+                                    </td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">${q.answer}</td>
+                                    <td style="padding: 15px; border-bottom: 1px solid #eee;">
+                                        <button onclick="editQuestion('${course._id}', '${q._id}')" class="btn btn-sm btn-info" style="margin-right: 5px;">Edit</button>
+                                        <button onclick="deleteQuestion('${course._id}', '${q._id}')" class="btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            document.getElementById('questionsContent').innerHTML = content;
+        }
+        
+        function showAddStudentForm() {
+            alert('Add Student functionality will be implemented here.');
+        }
+        
+        function showAddCourseForm() {
+            alert('Add Course functionality will be implemented here.');
+        }
+        
+        function editStudent(id) {
+            alert(`Edit Student with ID: ${id}`);
+        }
+        
+        function deleteStudent(id) {
+            if (confirm(`Are you sure you want to delete student with ID: ${id}?`)) {
+                // Implement actual deletion logic
+                alert(`Deleting student with ID: ${id}`);
+            }
+        }
+        
+        function editCourse(id) {
+            alert(`Edit Course with ID: ${id}`);
+        }
+        
+        function deleteCourse(id) {
+            if (confirm(`Are you sure you want to delete course with ID: ${id}?`)) {
+                // Implement actual deletion logic
+                alert(`Deleting course with ID: ${id}`);
+            }
+        }
+        
+        function showAddQuestionForm() {
+            alert('Add Question functionality will be implemented here.');
+        }
+        
+        function editQuestion(courseId, questionId) {
+            alert(`Edit Question with ID: ${questionId} in Course ID: ${courseId}`);
+        }
+        
+        function deleteQuestion(courseId, questionId) {
+            if (confirm(`Are you sure you want to delete question with ID: ${questionId} in Course ID: ${courseId}?`)) {
+                // Implement actual deletion logic
+                alert(`Deleting question with ID: ${questionId} in Course ID: ${courseId}`);
+            }
+        }
+        
+        function logout() {
+            if (confirm('Are you sure you want to log out?')) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminUsername');
+                window.location.href = 'admin_login.html';
+            }
+        }
+    </script>
+</body>
+</html>
+        
